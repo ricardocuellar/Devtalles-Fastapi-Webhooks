@@ -76,3 +76,10 @@ async def github_webhook(
         print(f"NUEVO issue guardado: {issue.title} - {issue.url}")
 
     return {"status": "ok"}
+
+
+@router.get("/issues", response_model=list[Issue])
+def list_issues(session: Session = Depends(get_session)):
+    """Devuelve el listado de issues guardados"""
+    query = select(Issue)
+    return session.exec(query).all()
