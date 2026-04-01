@@ -7,6 +7,7 @@ import os
 from fastapi import APIRouter, Header, HTTPException, Request, Depends
 from sqlmodel import Session, select
 from app.db import get_session
+from app.notifications import send_discord_notification
 from .models import Issue
 
 router = APIRouter()
@@ -74,6 +75,8 @@ async def github_webhook(
         session.refresh(issue)
 
         print(f"NUEVO issue guardado: {issue.title} - {issue.url}")
+
+        await send_discord_notification(issue)
 
     return {"status": "ok"}
 
